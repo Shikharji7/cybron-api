@@ -1,19 +1,32 @@
 <?php
+declare(strict_types=1);
+
+// CORS Headers humesha strict_types ke bilkul niche hone chahiye
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
+
 /**
  * CYBRON — AI triage
  * POST { description, amount?, lang? }
  * Returns structured JSON: fraud_type, severity, priority, call_1930, steps[]
  * Used at case intake and on the landing "AI fraud check".
  */
-declare(strict_types=1);
-require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/ai.php';
+
+// Render aur InfinityFree dono ke hisab se safe file path detection
+if (file_exists(__DIR__ . '/../includes/functions.php')) {
+    require_once __DIR__ . '/../includes/functions.php';
+    require_once __DIR__ . '/../includes/ai.php';
+} else if (file_exists(__DIR__ . '/includes/functions.php')) {
+    require_once __DIR__ . '/includes/functions.php';
+    require_once __DIR__ . '/../includes/ai.php'; // Agat functions ek folder niche ho
+} else {
+    require_once __DIR__ . '/functions.php';
+    require_once __DIR__ . '/ai.php';
+}
 
 header('Content-Type: application/json; charset=utf-8');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
