@@ -1,10 +1,14 @@
 <?php
+declare(strict_types=1);
+
+// CORS Headers humesha strict_types ke bilkul niche hone chahiye
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
+
 /**
  * CYBRON — CyberRakshak AI proxy (via Cloudflare Worker, multilingual)
  * Browser POSTs { message }. Forwarded to a Cloudflare Worker (free, outside
@@ -12,8 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
  * InfinityFree blocks direct outbound calls to AI APIs, so this two-hop
  * setup is required on free hosting.
  */
-declare(strict_types=1);
-require_once __DIR__ . '/../includes/functions.php';
+
+// Render aur InfinityFree dono ke hisab se safe file path detection
+if (file_exists(__DIR__ . '/../includes/functions.php')) {
+    require_once __DIR__ . '/../includes/functions.php';
+} else if (file_exists(__DIR__ . '/includes/functions.php')) {
+    require_once __DIR__ . '/includes/functions.php';
+} else {
+    // Agar functions file direct root me ho
+    require_once __DIR__ . '/functions.php';
+}
 
 header('Content-Type: application/json; charset=utf-8');
 
