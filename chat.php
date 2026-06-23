@@ -1,4 +1,10 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
 /**
  * CYBRON — CyberRakshak AI proxy (via Cloudflare Worker, multilingual)
  * Browser POSTs { message }. Forwarded to a Cloudflare Worker (free, outside
