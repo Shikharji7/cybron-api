@@ -4,7 +4,32 @@
  */
 declare(strict_types=1);
 
-require_once __DIR__ . '/../config/db.php';
+// Render aur InfinityFree dono ke hisab se safe db.php path detection
+if (file_exists(__DIR__ . '/../config/db.php')) {
+    require_once __DIR__ . '/../config/db.php';
+} else if (file_exists(__DIR__ . '/config/db.php')) {
+    require_once __DIR__ . '/config/db.php';
+} else if (file_exists(__DIR__ . '/db.php')) {
+    require_once __DIR__ . '/db.php';
+} else {
+    // Agar database file nahi milti (Render par), toh dummy db() function define karein taaki code crash na ho
+    if (!function_exists('db')) {
+        function db() {
+            throw new Exception("Database connection not available on Render.");
+        }
+    }
+}
+
+// Safety fallback constants taaki PHP 8 par undefined constant errors na aayein
+if (!defined('CYBER_HELPLINE')) {
+    define('CYBER_HELPLINE', '1930');
+}
+if (!defined('BRAND_NAME')) {
+    define('BRAND_NAME', 'Cybron');
+}
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'https://cybron.in');
+}
 
 /** Escape for HTML output */
 function e(?string $s): string
